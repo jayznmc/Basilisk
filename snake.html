@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Basilisk</title>
+        <link rel="stylesheet" href="style.css"></link>
+    </head>
+    <body>
+        <h2>Project Basilisk</h2>
+
+        <canvas id="gameCanvas" width="300" height="300"></canvas>
+        <script>
+            const CANVAS_BORDER_COLOUR = 'black';
+            const CANVAS_BACKGROUND_COLOUR = 'grey';
+            const BASILISK_SKIN = 'lightgreen';
+            const BASILISK_BORDER = 'darkgreen';
+
+            var gameCanvas = document.getElementById("gameCanvas");
+            var ctx = gameCanvas.getContext("2d");
+
+            //Create snake by an array of coordinates
+                        let basilisk = [
+                            {x: 150, y: 150},
+                            {x: 140, y: 150},
+                            {x: 130, y: 150},
+                            {x: 120, y: 150},
+                            {x: 110, y: 150},
+                        ];
+            ctx.fillStyle = CANVAS_BACKGROUND_COLOUR;
+            ctx.strokestyle = CANVAS_BORDER_COLOUR;
+
+            ctx.fillRect(0,0,gameCanvas.width,gameCanvas.height);
+            ctx.strokeRect(0,0,gameCanvas.width,gameCanvas.height);        
+
+            drawBasilisk();
+            
+            // Loop function that builds Basilisk with body parts
+            function drawBasilisk(){
+                basilisk.forEach(drawPart);
+            }
+
+            //Draw body piece object on canvas
+            function drawPart(bodyPart){
+                //Set colour
+                ctx.fillStyle = BASILISK_SKIN;
+                ctx.strokestyle = BASILISK_BORDER;
+
+                //draw part at coordinates
+                ctx.fillRect(bodyPart.x, bodyPart.y, 10,10);
+                ctx.strokeRect(bodyPart.x,bodyPart.y,10,10);
+            }
+
+            
+        </script>
+
+    </body>
+</html>
