@@ -11,13 +11,14 @@
         <script>
             const CANVAS_BORDER_COLOUR = 'black';
             const CANVAS_BACKGROUND_COLOUR = 'grey';
-            const BASILISK_SKIN = 'lightgreen';
-            const BASILISK_BORDER = 'darkgreen';
+            const BASILISK_SKIN = 'purple';
+            const BASILISK_BORDER = 'red';
+            const DELAY = 100;
 
             var gameCanvas = document.getElementById("gameCanvas");
             var ctx = gameCanvas.getContext("2d");
 
-            //Create snake by an array of coordinates
+            //Create an array of coordinates, starting point. 5 pieces long
                         let basilisk = [
                             {x: 150, y: 150},
                             {x: 140, y: 150},
@@ -30,9 +31,42 @@
 
             ctx.fillRect(0,0,gameCanvas.width,gameCanvas.height);
             ctx.strokeRect(0,0,gameCanvas.width,gameCanvas.height);        
-
-            drawBasilisk();
             
+
+            // Directional velocity
+            let dx = 10;
+            let dy = 0;
+
+            //start
+            main();
+
+            //init key listener
+            document.addEventListener("keydown", changeDirection);
+
+            function main(){
+               setTimeout(function onTick() {
+                    clearCanvas();
+                    moveBasilisk();
+                    drawBasilisk();
+
+
+                    //Call again
+                    main();
+                }, DELAY) 
+            }
+
+
+            // Change x-coord based on horizontal velocity, change y-coord based on vertical velocity
+            function moveBasilisk(){
+                const head = {x : basilisk[0].x + dx, y: basilisk[0].y + dy};
+
+                // Insert head at start of array
+                basilisk.unshift(head);
+
+                // Remove last element
+                basilisk.pop();
+            }
+
             // Loop function that builds Basilisk with body parts
             function drawBasilisk(){
                 basilisk.forEach(drawPart);
@@ -49,7 +83,43 @@
                 ctx.strokeRect(bodyPart.x,bodyPart.y,10,10);
             }
 
-            
+            // Control basilisk direction with keyboard
+            function changeDirection(event){
+                if (event.code == 'ArrowLeft'){
+                    dx = -10;
+                    dy = 0;
+                }
+
+                if (event.code == 'ArrowRight'){
+                    dx = 10;
+                    dy = 0;
+                }
+
+                if (event.code == 'ArrowUp'){
+                    dx = 0;
+                    dy = -10;
+                }
+
+                if (event.code == 'ArrowDown'){
+                    dx = 0;
+                    dy = 10;
+                }
+
+
+
+            }
+
+            // Clear the screen, removes previous states.
+            function clearCanvas(){
+                ctx.fillStyle = 'grey';
+                ctx.strokestyle = 'black';
+
+                ctx.fillRect(0,0, gameCanvas.width, gameCanvas.height);
+                ctx.strokeRect(0,0, gameCanvas.width, gameCanvas.height);
+            }
+             
+
+
         </script>
 
     </body>
