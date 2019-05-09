@@ -6,25 +6,27 @@
     </head>
     <body>
         <h2>Project Basilisk</h2>
-
+        
         <canvas id="gameCanvas" width="300" height="300"></canvas>
+        <div id="score">Good Luck</div>
         <script>
             const CANVAS_BORDER_COLOUR = 'black';
             const CANVAS_BACKGROUND_COLOUR = 'grey';
             const BASILISK_SKIN = 'purple';
             const BASILISK_BORDER = 'red';
             const DELAY = 100;
+            let score = 0;
 
             var gameCanvas = document.getElementById("gameCanvas");
             var ctx = gameCanvas.getContext("2d");
 
             //Create an array of coordinates, starting point. 5 pieces long
                         let basilisk = [
-                            {x: 150, y: 150},
-                            {x: 140, y: 150},
-                            {x: 130, y: 150},
-                            {x: 120, y: 150},
-                            {x: 110, y: 150},
+                            {x: 50, y: 150},
+                            {x: 40, y: 150},
+                            {x: 30, y: 150},
+                            {x: 20, y: 150},
+                            {x: 10, y: 150},
                         ];
             ctx.fillStyle = CANVAS_BACKGROUND_COLOUR;
             ctx.strokestyle = CANVAS_BORDER_COLOUR;
@@ -39,6 +41,7 @@
 
             //start
             main();
+            createFood();
 
             //init key listener
             document.addEventListener("keydown", changeDirection);
@@ -46,6 +49,8 @@
             function main(){
                setTimeout(function onTick() {
                     clearCanvas();
+                    drawFood();
+                    growBasilisk();
                     moveBasilisk();
                     drawBasilisk();
 
@@ -55,6 +60,23 @@
                 }, DELAY) 
             }
 
+            // Generate random set of coords, to produce x and y position of food
+            function randomXY(min, max){
+                return Math.round((Math.random() * (max-min) + min) / 10) * 10;
+            }
+
+            //Create food piece, if basilisk collects food, new piece is created.
+            function createFood(){
+                foodX = randomXY(0, gameCanvas.width - 10); //move in from boundary
+                foodY = randomXY(0, gameCanvas.height - 10);
+
+                basilisk.forEach(function hasCollectedFood(part){
+                    const collectFood = part.x == foodX && part.y == foodY
+                    if (collectFood){
+                        createFood();
+                    }
+                } );
+            }
 
             // Change x-coord based on horizontal velocity, change y-coord based on vertical velocity
             function moveBasilisk(){
@@ -83,6 +105,13 @@
                 ctx.strokeRect(bodyPart.x,bodyPart.y,10,10);
             }
 
+            function drawFood(){
+                ctx.fillStyle = 'orange';
+                ctx.strokestyle = 'darkred';
+                ctx.fillRect(foodX, foodY, 10, 10);
+                ctx.strokeRect(foodX, foodY, 10, 10);
+            }
+
             // Control basilisk direction with keyboard
             function changeDirection(event){
                 if (event.code == 'ArrowLeft'){
@@ -105,8 +134,6 @@
                     dy = 10;
                 }
 
-
-
             }
 
             // Clear the screen, removes previous states.
@@ -117,8 +144,22 @@
                 ctx.fillRect(0,0, gameCanvas.width, gameCanvas.height);
                 ctx.strokeRect(0,0, gameCanvas.width, gameCanvas.height);
             }
-             
 
+            // Growing basalisk after collecting food
+            function growBasilisk(){
+                const head = {x: basilisk[0].x + dx, y: basilisk[0].y};
+                basilisk.unshift(head);
+                const hasEaten = basilisk[0].x == foodX && basilisk[0].y == foodY;
+                if (hasEaten){
+                    createFood();
+                    score += 1;
+                    document.getElementById('score').innerHTML = "Score : " + score;
+                }else{
+                    basilisk.pop();
+                } 
+
+            }
+             
 
         </script>
 

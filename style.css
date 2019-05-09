@@ -1,3 +1,10 @@
 body{
     text-align: center;
+    
+}
+
+#score{
+    font-size: 50px;
+    color: darkgrey;
+    padding-top: 30px;
 }
